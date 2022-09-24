@@ -1,1 +1,1 @@
-# stream-compositions-playground
+# Stream Compositions Playground
