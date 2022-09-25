@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>integration-mocks</artifactId>
+        <groupId>com.backbase.stream.compositions.playground</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>legal-entity-integration</artifactId>
+    <name>Stream Compositions Playground :: Integration Mocks :: Legal Entity</name>
+
+    <properties>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <boat-maven-plugin.version>0.16.5</boat-maven-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>${findbugs.jsr305.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-databind-nullable.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>build-info</goal>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration combine.self="override">
+                            <attach>false</attach>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Unpack OpenAPI specs from zip dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.backbase.stream.compositions.api</groupId>
+                                    <artifactId>legal-entity-integration-api</artifactId>
+                                    <version>3.2.0</version>
+                                    <classifier>api</classifier>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.directory}/yaml</outputDirectory>
+                                    <overWrite>true</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>**/*.yaml, **/*.json</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate models and clients from unpacked OpenAPI specs -->
+            <plugin>
+                <groupId>com.backbase.oss</groupId>
+                <artifactId>boat-maven-plugin</artifactId>
+                <version>${boat-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-legal-entity-service-api-code</id>
+                        <goals>
+                            <goal>generate-spring-boot-embedded</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <generatorName>java</generatorName>
+                            <inputSpec>${project.build.directory}/yaml/legal-entity-integration-api/service-api-v2.0.0.yaml</inputSpec>
+                            <apiPackage>com.backbase.stream.compositions.integration.legalentity.api</apiPackage>
+                            <modelPackage>com.backbase.stream.compositions.integration.legalentity.model</modelPackage>
+                            <generatorName>java</generatorName>
+                            <additionalProperties>useWithModifiers=true</additionalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*com/backbase/stream/*/**</exclude>
+                        <exclude>**/*com/backbase/wsecu/ingestion/integration/legalentity/config*/**</exclude>
+                        <exclude>**/*com/backbase/wsecu/ingestion/integration/legalentity/Application*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

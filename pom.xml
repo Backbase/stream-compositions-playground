@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>service-sdk-starter-core</artifactId>
+        <groupId>com.backbase.buildingblocks</groupId>
+        <version>15.0.1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.backbase.stream.compositions.playground</groupId>
+    <artifactId>stream-composition-playground</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>Stream Compositions Playground</name>
+    <description>Stream compositions playground to demonstrate how to use it practice</description>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <swagger.annotations.version>1.6.6</swagger.annotations.version>
+        <jackson-databind-nullable.version>0.2.3</jackson-databind-nullable.version>
+        <findbugs.jsr305.version>3.0.2</findbugs.jsr305.version>
+    </properties>
+
+    <modules>
+        <module>integration-mocks</module>
+        <module>integration-mocks/legal-entity-integration</module>
+    </modules>
+
+</project>
